@@ -1523,7 +1523,8 @@ class PEDA(object):
 
         result = []
         pid = self.getpid()
-        if not pid: # not running, try to use elfheader()
+        #if not pid: # not running, try to use elfheader()
+        if False:
             try:
                 return _get_offline_maps()
             except:
@@ -3519,10 +3520,12 @@ class PEDACmd(object):
 
         (pid,) = normalize_argv(arg, 1)
 
-        if not pid:
+        #if not pid:
+        if False:
             pid = peda.getpid()
 
-        if not pid:
+        #if not pid:
+        if False:
             return
 
         info = {}
@@ -3869,7 +3872,8 @@ class PEDACmd(object):
         """
 
         (count,) = normalize_argv(arg, 1)
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         args = peda.get_function_args(count)
@@ -3925,7 +3929,8 @@ class PEDACmd(object):
         if to_int(count) is None:
             count = 1
 
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         next_code = peda.next_inst(peda.getreg("pc"), count)
@@ -3980,7 +3985,8 @@ class PEDACmd(object):
         if insts is None:
             self._missing_argument()
 
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         peda.save_user_command("hook-stop") # disable hook-stop to speedup
@@ -4033,7 +4039,8 @@ class PEDACmd(object):
         """
         (funcs, mapname) = normalize_argv(arg, 2)
 
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         if not mapname:
@@ -4118,7 +4125,8 @@ class PEDACmd(object):
         """
         (insts, mapname) = normalize_argv(arg, 2)
 
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         if not mapname:
@@ -4210,7 +4218,8 @@ class PEDACmd(object):
         if count is None:
             self._missing_argument()
 
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         if keyword is None or keyword == "all":
@@ -4266,7 +4275,8 @@ class PEDACmd(object):
         Usage:
             MYNAME
         """
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         pc = peda.getreg("pc")
@@ -4288,7 +4298,8 @@ class PEDACmd(object):
         if count is None:
             count = 8
 
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         pc = peda.getreg("pc")
@@ -4355,7 +4366,8 @@ class PEDACmd(object):
         """
         (count,) = normalize_argv(arg, 1)
 
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         text = blue("[%s]" % "stack".center(78, "-"))
@@ -4389,7 +4401,8 @@ class PEDACmd(object):
         if not opt:
             return
 
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         clearscr = config.Option.get("clearscr")
@@ -4452,7 +4465,8 @@ class PEDACmd(object):
         """
 
         (mapname,) = normalize_argv(arg, 1)
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             maps = peda.get_vmmap()
         elif to_int(mapname) is None:
             maps = peda.get_vmmap(mapname)
@@ -4748,7 +4762,8 @@ class PEDACmd(object):
 
         (address, count) = normalize_argv(arg, 2)
 
-        if self._is_running():
+        #if self._is_running():
+        if False:
             sp = peda.getreg("sp")
         else:
             sp = None
@@ -4804,7 +4819,8 @@ class PEDACmd(object):
                         "Interrupt", "Direction", "Overflow"]
 
         (option, flagname) = normalize_argv(arg, 2)
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         elif option and not flagname:
@@ -4847,7 +4863,8 @@ class PEDACmd(object):
             self._missing_argument()
 
         text = ""
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         def get_reg_text(r, v):
@@ -5112,7 +5129,8 @@ class PEDACmd(object):
         if asmcode is None:
             self._missing_argument()
 
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         asmcode = arg[0]
@@ -5153,7 +5171,8 @@ class PEDACmd(object):
         if asmcode is None:
             self._missing_argument()
 
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         asmcode = arg[0]
@@ -5269,7 +5288,8 @@ class PEDACmd(object):
 
         (reg, start, end) = normalize_argv(arg, 3)
         result = []
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         mapname = None
@@ -5354,7 +5374,8 @@ class PEDACmd(object):
                     return (pos, offset)
             return None
 
-        if not self._is_running():
+        #if not self._is_running():
+        if False:
             return
 
         reg_result = {}
