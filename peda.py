@@ -1,6 +1,7 @@
 #       PEDA - Python Exploit Development Assistance for GDB
 #
-#       Copyright (C) 2012 Long Le Dinh <longld at vnsecurity.net>
+#       Copyright (C) 2012 Long Le Dinh <longld at vnsecurity.net> and
+#       Copyright (C) 2018 Taisei Miyagawa <miyagaw61 at https://miyagaw61/github.io>
 #
 #       License: see LICENSE file for details
 #
