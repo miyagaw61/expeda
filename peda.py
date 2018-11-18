@@ -6142,6 +6142,20 @@ peda = PEDA()
 pedacmd = PEDACmd()
 pedacmd.help.__func__.options = pedacmd.commands # XXX HACK
 
+# importing exgdb commands
+EXGDBPATH = os.environ["EXGDBPATH"]
+sys.path.insert(0, EXGDBPATH)
+import exgdb
+import types
+for cmd_str in dir(exgdb):
+    if cmd_str[0] == "_":
+        continue
+    cmd = getattr(exgdb, cmd_str)
+    if not isinstance(cmd, types.FunctionType):
+        continue
+    setattr(PEDACmd, cmd_str, cmd)
+    pedacmd.commands.append(cmd_str)
+
 # register "peda" command in gdb
 pedaGDBCommand()
 Alias("pead", "peda") # just for auto correction
