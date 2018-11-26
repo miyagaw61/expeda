@@ -4283,7 +4283,7 @@ class PEDACmd(object):
 
         pc = peda.getreg("pc")
         # display register info
-        msg("[%s]" % "registers".center(78, "-"), "blue")
+        msg("[%s]" % "registers".center(78, "-"), "blue", "light")
         self.xinfo("register")
 
         return
@@ -4310,7 +4310,7 @@ class PEDACmd(object):
         else:
             inst = None
 
-        text = blue("[%s]" % "code".center(78, "-"))
+        text = blue("[%s]" % "code".center(78, "-"), "light")
         msg(text)
         if inst: # valid $PC
             text = ""
@@ -4372,7 +4372,7 @@ class PEDACmd(object):
         if False:
             return
 
-        text = blue("[%s]" % "stack".center(78, "-"))
+        text = blue("[%s]" % "stack".center(78, "-"), "light")
         msg(text)
         sp = peda.getreg("sp")
         if peda.is_address(sp):
@@ -4416,6 +4416,15 @@ class PEDACmd(object):
         if "reg" in opt or "register" in opt:
             self.context_register()
 
+        if "infonow" in opt:
+            print(red("======================================inow======================================", "bold"))
+            pc.infonow()
+            print(red("================================================================================", "bold"))
+            self.context_code(8)
+            if not "stack" in opt:
+                msg("[%s]" % ("-"*78), "blue", "light")
+                msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
+
         # display assembly code
         if "code" in opt:
             self.context_code(count)
@@ -4423,8 +4432,13 @@ class PEDACmd(object):
         # display stack content, forced in case SIGSEGV
         if "stack" in opt or "SIGSEGV" in status:
             self.context_stack(count)
-        msg("[%s]" % ("-"*78), "blue")
-        msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
+            #if "infonow" in opt:
+            #    msg("[%s]" % ("-"*78), "blue", "light")
+            #    msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
+
+        if "reg" in opt or "code" in opt or "stack" in opt:
+            msg("[%s]" % ("-"*78), "blue", "light")
+            msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
 
         # display stopped reason
         if "SIG" in status:
@@ -6145,16 +6159,37 @@ pedacmd.help.__func__.options = pedacmd.commands # XXX HACK
 # importing exgdb commands
 EXGDBPATH = os.environ["EXGDBPATH"]
 sys.path.insert(0, EXGDBPATH)
-import exgdb
+import exgdbcmds
 import types
+for cmd_str in dir(exgdbcmds):
+    if cmd_str[0] == "_":
+        continue
+    cmd = getattr(exgdbcmds, cmd_str)
+    if not isinstance(cmd, types.FunctionType):
+        continue
+    setattr(PEDACmd, cmd_str, cmd)
+    pedacmd.commands.append(cmd_str)
+
+# importing exgdb
+import exgdb
 for cmd_str in dir(exgdb):
     if cmd_str[0] == "_":
         continue
     cmd = getattr(exgdb, cmd_str)
     if not isinstance(cmd, types.FunctionType):
         continue
-    setattr(PEDACmd, cmd_str, cmd)
-    pedacmd.commands.append(cmd_str)
+    setattr(PEDA, cmd_str, cmd)
+
+# importing exutils
+import utils
+import exutils
+for cmd_str in dir(exutils):
+    if cmd_str[0] == "_":
+        continue
+    cmd = getattr(exutils, cmd_str)
+    if not isinstance(cmd, types.FunctionType):
+        continue
+    setattr(utils, cmd_str, cmd)
 
 # register "peda" command in gdb
 pedaGDBCommand()
