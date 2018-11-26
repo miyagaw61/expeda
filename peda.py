@@ -6157,8 +6157,10 @@ pedacmd = PEDACmd()
 pedacmd.help.__func__.options = pedacmd.commands # XXX HACK
 
 # importing exgdb commands
-EXGDBPATH = os.environ["EXGDBPATH"]
-sys.path.insert(0, EXGDBPATH)
+PEDAFILE = os.path.abspath(os.path.expanduser(__file__))
+EXPEDAPATH = os.path.dirname(PEDAFILE)
+sys.path.insert(0, EXPEDAPATH)
+sys.path.insert(0, EXPEDAPATH + "/lib")
 import exgdbcmds
 import types
 for cmd_str in dir(exgdbcmds):

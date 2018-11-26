@@ -1,13 +1,9 @@
-import gdb
-
 import os
 import sys
 import re
 import time
 
-EXPEDAPATH = os.environ["EXPEDAPATH"]
-sys.path.insert(0, EXPEDAPATH)
-sys.path.insert(0, EXPEDAPATH + "/lib")
+import gdb
 from peda import PEDA, PEDACmd, REGISTERS
 import utils
 import config
