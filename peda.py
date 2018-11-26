@@ -4418,7 +4418,7 @@ class PEDACmd(object):
 
         if "infonow" in opt:
             print(red("======================================inow======================================", "bold"))
-            pc.infonow()
+            self.infonow()
             print(red("================================================================================", "bold"))
             self.context_code(8)
             if not "stack" in opt:
