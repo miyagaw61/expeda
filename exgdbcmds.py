@@ -22,6 +22,8 @@ def ctn(self):
     gdb.execute("continue")
 
 c = ctn
+setattr(PEDACmd, "ctn", ctn)
+setattr(PEDACmd, "c", c)
 
 def brk(self, *arg):
     """
@@ -33,6 +35,8 @@ def brk(self, *arg):
     p.set_breakpoint(sym)
 
 b = brk
+setattr(PEDACmd, "brk", brk)
+setattr(PEDACmd, "b", b)
 
 def next(self, *arg):
     """
@@ -47,6 +51,8 @@ def next(self, *arg):
     gdb.execute("nexti " + str(n))
 
 n = next
+setattr(PEDACmd, "next", next)
+setattr(PEDACmd, "n", n)
 
 def step(self, *arg):
     """
@@ -61,6 +67,8 @@ def step(self, *arg):
     gdb.execute("stepi " + str(n))
 
 s = step
+setattr(PEDACmd, "step", step)
+setattr(PEDACmd, "s", s)
 
 def afterpc(self, *arg):
     """
@@ -388,6 +396,8 @@ def infox(self, *arg):
             (start, end, perm, name) = vmrange
     utils.msg(text)
     return
+
+setattr(PEDACmd, "infox", infox)
 
 def contextmode(self, *arg):
     """
