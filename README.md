@@ -50,7 +50,7 @@ EXPEDA - Extended PEDA
        0x402a3b:    call   0x402840 <setlocale@plt>
        0x402a4a:    call   0x4024b0 <bindtextdomain@plt>
        0x402a54:    call   0x402470 <textdomain@plt>
-    gdb-peda$ vi tmp.py
+    gdb-peda$ editor tmp.py # You must have set `$EDITOR` . And you can use `vim` or `emacs` instead of `editor` .
     gdb-peda$ cat tmp.py
     while True:
         c.next() # You can use `p` and `c` suddenly if you have used `p = PEDA()` and `c = PEDACmd()` in `gdbrc.py` .
