@@ -10,8 +10,8 @@ import config
 from enert2 import *
 from enert2.enert2.colorize import *
 
-p = PEDA()
-c = PEDACmd()
+pd = PEDA()
+pc = PEDACmd()
 
 def ctn(self):
     """
@@ -21,6 +21,7 @@ def ctn(self):
     """
     gdb.execute("continue")
 
+c = ctn
 setattr(PEDACmd, "ctn", ctn)
 setattr(PEDACmd, "c", ctn)
 
@@ -31,8 +32,9 @@ def brk(self, *arg):
         MYNAME symbol
     """
     (sym, ) = utils.normalize_argv(arg, 1)
-    p.set_breakpoint(sym)
+    pd.set_breakpoint(sym)
 
+b = brk
 setattr(PEDACmd, "brk", brk)
 setattr(PEDACmd, "b", brk)
 
@@ -48,6 +50,7 @@ def next(self, *arg):
         n = 1
     gdb.execute("nexti " + str(n))
 
+n = next
 setattr(PEDACmd, "next", next)
 setattr(PEDACmd, "n", next)
 
@@ -63,6 +66,7 @@ def step(self, *arg):
         n = 1
     gdb.execute("stepi " + str(n))
 
+s = step
 setattr(PEDACmd, "step", step)
 setattr(PEDACmd, "s", step)
 
@@ -72,7 +76,7 @@ def afterpc(self, *arg):
     Usage:
         MYNAME n
     """
-    arch = p.getarch()
+    arch = pd.getarch()
     (expr, ) = utils.normalize_argv(arg,1)
     expr = str(expr)
     n = gdb.parse_and_eval(expr)
@@ -80,8 +84,9 @@ def afterpc(self, *arg):
         ip = "$rip"
     else:
         ip = "$eip"
-    p.execute('pdisas %s /%s' % (ip, n))
+    pd.execute('pdisas %s /%s' % (ip, n))
 
+afpc = afterpc
 setattr(PEDACmd, "afterpc", afterpc)
 setattr(PEDACmd, "af", afterpc)
 
@@ -91,21 +96,22 @@ def beforepc(self, *arg):
     Usage:
         MYNAME n
     """
-    arch = p.getarch()
+    arch = pd.getarch()
     (expr, ) = utils.normalize_argv(arg,1)
     expr = str(expr)
     n = gdb.parse_and_eval(expr)
     n = utils.to_int(n)
     if arch[1] == 64:
-        ip = p.getreg("rip")
+        ip = pd.getreg("rip")
     else:
-        ip = p.getreg("eip")
+        ip = pd.getreg("eip")
     if n == 1:
-        p.execute('pdisas %s /%s' % (ip, n))
+        pd.execute('pdisas %s /%s' % (ip, n))
     else:
-        addr = p.prev_inst(ip, n)[1][0]
-        p.execute('pdisas %s /%s' % (addr, n))
+        addr = pd.prev_inst(ip, n)[1][0]
+        pd.execute('pdisas %s /%s' % (addr, n))
 
+befpc = beforepc
 setattr(PEDACmd, "beforepc", beforepc)
 setattr(PEDACmd, "bef", beforepc)
 
@@ -115,17 +121,18 @@ def afteraddr(self, *arg):
     Usage:
         MYNAME addr n
     """
-    arch = p.getarch()
+    arch = pd.getarch()
     (addr, expr) = utils.normalize_argv(arg,2)
     expr = str(expr)
     n = gdb.parse_and_eval(expr)
     n = utils.to_int(n)
     if arch[1] == 64:
-        ip = p.getreg("rip")
+        ip = pd.getreg("rip")
     else:
-        ip = p.getreg("eip")
-    p.execute('pdisas %s /%s' % (addr, n))
+        ip = pd.getreg("eip")
+    pd.execute('pdisas %s /%s' % (addr, n))
 
+afad = afteraddr
 setattr(PEDACmd, "afteraddr", afteraddr)
 setattr(PEDACmd, "afad", afteraddr)
 
@@ -135,21 +142,22 @@ def beforeaddr(self, *arg):
     Usage:
         MYNAME addr n
     """
-    arch = p.getarch()
+    arch = pd.getarch()
     (addr, expr) = utils.normalize_argv(arg,2)
     expr = str(expr)
     n = gdb.parse_and_eval(expr)
     n = utils.to_int(n)
     if arch[1] == 64:
-        ip = p.getreg("rip")
+        ip = pd.getreg("rip")
     else:
-        ip = p.getreg("eip")
+        ip = pd.getreg("eip")
     if n == 1:
-        p.execute('pdisas %s /%s' % (ip, n))
+        pd.execute('pdisas %s /%s' % (ip, n))
     else:
-        addr = p.prev_inst(ip, n)[1][0]
-        p.execute('pdisas %s /%s' % (addr, n))
+        addr = pd.prev_inst(ip, n)[1][0]
+        pd.execute('pdisas %s /%s' % (addr, n))
 
+befad = beforeaddr
 setattr(PEDACmd, "beforeaddr", beforeaddr)
 setattr(PEDACmd, "befad", beforeaddr)
 
@@ -180,19 +188,19 @@ def allstack(self):
     Usage:
         MYNAME
     """
-    arch = p.getarch()
+    arch = pd.getarch()
     if arch[1] == 64:
-        sp = p.getreg("rsp")
-        bp = p.getreg("rbp")
+        sp = pd.getreg("rsp")
+        bp = pd.getreg("rbp")
     else:
-        sp = p.getreg("esp")
-        bp = p.getreg("ebp")
+        sp = pd.getreg("esp")
+        bp = pd.getreg("ebp")
     arg = bp - sp
-    intsize = p.intsize()
+    intsize = pd.intsize()
     arg = arg/intsize
     arg += 1
     arg = utils.to_i(arg)
-    p.execute("stack %s" % arg)
+    pd.execute("stack %s" % arg)
     return
 
 setattr(PEDACmd, "allstack", allstack)
@@ -221,16 +229,16 @@ def nuntil(self, *arg):
     (regex, callonlyflag) = utils.normalize_argv(arg, 2)
     regex = str(regex)
     r = re.compile(regex)
-    arch = p.getarch()
+    arch = pd.getarch()
     ctx = config.Option.get("context")
     config.Option.set("context", "code")
     if callonlyflag == True or callonlyflag == "True":
-        cmd = c.nextcall
+        cmd = pc.nextcall
     else:
-        cmd = c.next
-    c.next()
+        cmd = pc.next
+    pc.next()
     while True:
-        (addr, code) = p.current_inst(p.getreg("pc"))
+        (addr, code) = pd.current_inst(pd.getreg("pc"))
         regexed_code = r.findall(code)
         if len(regexed_code) > 0:
             config.Option.set("context", ctx)
@@ -257,17 +265,17 @@ def suntil(self, *arg):
         depth = 1
     now_depth = 0
     if callonlyflag == True or callonlyflag == "True":
-        cmd = c.nextcall
+        cmd = pc.nextcall
     else:
-        cmd = c.next
-    next_when_call = c.next
-    step_when_call = c.step
-    arch = p.getarch()
+        cmd = pc.next
+    next_when_call = pc.next
+    step_when_call = pc.step
+    arch = pd.getarch()
     ctx = config.Option.get("context")
     config.Option.set("context", "code")
-    c.step()
+    pc.step()
     while True:
-        (addr, code) = p.current_inst(p.getreg("pc"))
+        (addr, code) = pd.current_inst(pd.getreg("pc"))
         regexed_code = r.findall(code)
         if len(regexed_code) > 0:
             config.Option.set("context", ctx)
@@ -278,13 +286,13 @@ def suntil(self, *arg):
             ret_code = r_ret.findall(code)
             if len(call_code) > 0:
                 if now_depth < depth:
-                    c.step()
+                    pc.step()
                     now_depth = now_depth + 1
                     continue
             elif len(ret_code) > 0:
                 if now_depth <= depth:
                     now_depth = now_depth - 1
-                    c.next()
+                    pc.next()
                     continue
             cmd()
 
@@ -298,7 +306,7 @@ def nextcalluntil(self, *arg):
     """
     (regex, ) = utils.normalize_argv(arg, 1)
     regex = str(regex)
-    c.nuntil(regex, True)
+    pc.nuntil(regex, True)
 
 setattr(PEDACmd, "nextcalluntil", nextcalluntil)
 
@@ -313,7 +321,7 @@ def stepcalluntil(self, *arg):
     depth = utils.to_int(depth)
     if depth == None:
         depth = 1
-    c.suntil(regex, depth, True)
+    pc.suntil(regex, depth, True)
 
 setattr(PEDACmd, "stepcalluntil", stepcalluntil)
 
@@ -323,7 +331,7 @@ def nuntilxor(self):
     Usage:
         MYNAME
     """
-    c.nuntil("xor")
+    pc.nuntil("xor")
 
 setattr(PEDACmd, "nuntilxor", nuntilxor)
 
@@ -337,7 +345,7 @@ def suntilxor(self, *arg):
     depth = utils.to_int(depth)
     if depth == None:
         depth = 1
-    c.suntil("xor", depth)
+    pc.suntil("xor", depth)
 
 setattr(PEDACmd, "suntilxor", suntilxor)
 
@@ -347,19 +355,19 @@ def infonow(self):
     Usage:
         MYNAME
     """
-    (addr, code) = p.current_inst(p.getreg("pc"))
+    (addr, code) = pd.current_inst(pd.getreg("pc"))
     for reg in REGISTERS[8]:
         reg_A = " " + reg
         reg_B = "," + reg
         if reg_A in code or reg_B in code:
             reg = reg.replace(" ", "")
             print(green("%s : " % reg, "bold"), end="")
-            c.infox(gdb.parse_and_eval("$%s" % reg))
+            pc.infox(gdb.parse_and_eval("$%s" % reg))
     for reg in REGISTERS[16]:
         regexed_code = re.findall("[ ,]%s" % reg, code)
         if len(regexed_code) > 0:
             print(green("%s : " % reg, "bold"), end="")
-            c.infox(gdb.parse_and_eval("$%s" % reg))
+            pc.infox(gdb.parse_and_eval("$%s" % reg))
     for i in (32, 64):
         for reg in REGISTERS[i]:
             reg_A = " " + reg
@@ -374,12 +382,12 @@ def infonow(self):
                     now_code_str = gdb.execute("pdisass $rip /1", to_string=True)
                     print(now_code_str[6:])
                 else:
-                    c.infox(gdb.parse_and_eval("$%s" % reg))
+                    pc.infox(gdb.parse_and_eval("$%s" % reg))
     regexed_code = re.findall("0x[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]+", code)
     if len(regexed_code) > 0:
         for addr in regexed_code:
             print(green("%s: " % addr, "bold"), end="")
-            c.infox(addr)
+            pc.infox(addr)
     regexed_code = re.findall(r"\[[^ ]*\]", code)
     if len(regexed_code) > 0:
         for addr in regexed_code:
@@ -398,8 +406,9 @@ def infonow(self):
             addr = addr.replace("]", "")
             addr = str(gdb.parse_and_eval(addr))
             addr = re.findall("0x[0-9a-f]+", addr)[0] # "0x12341234 <'hogefunction'>" -> "0x12341234"
-            c.infox(addr)
+            pc.infox(addr)
 
+inow = infonow
 setattr(PEDACmd, "infonow", infonow)
 setattr(PEDACmd, "inow", infonow)
 
@@ -422,15 +431,15 @@ def infox(self, *arg):
 
     def get_reg_text(r, v):
         text = green("%s" % r.upper().ljust(3)) + ": "
-        chain = p.examine_mem_reference(v)
+        chain = pd.examine_mem_reference(v)
         text += utils.format_reference_chain(chain)
         text += "\n"
         return text
 
-    (arch, bits) = p.getarch()
+    (arch, bits) = pd.getarch()
     if str(address).startswith("r"):
         # Register
-        regs = p.getregs(" ".join(arg[1:]))
+        regs = pd.getregs(" ".join(arg[1:]))
         if regname is None:
             for r in REGISTERS[bits]:
                 if r in regs:
@@ -448,11 +457,11 @@ def infox(self, *arg):
         warning_utils.msg("not a register nor an address")
     else:
         # Address
-        chain = p.examine_mem_reference(address)
+        chain = pd.examine_mem_reference(address)
         #text += '\n'
         #text += 'info: '
         text += utils.format_reference_chain(chain) # + "\n"
-        vmrange = p.get_vmrange(address)
+        vmrange = pd.get_vmrange(address)
         if vmrange:
             (start, end, perm, name) = vmrange
     utils.msg(text)
