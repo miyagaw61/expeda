@@ -109,6 +109,50 @@ def beforepc(self, *arg):
 setattr(PEDACmd, "afterpc", beforepc)
 setattr(PEDACmd, "bef", beforepc)
 
+def afteraddr(self, *arg):
+    """
+    Show n instructions after given addr
+    Usage:
+        MYNAME addr n
+    """
+    arch = p.getarch()
+    (addr, expr) = utils.normalize_argv(arg,2)
+    expr = str(expr)
+    n = gdb.parse_and_eval(expr)
+    n = utils.to_int(n)
+    if arch[1] == 64:
+        ip = p.getreg("rip")
+    else:
+        ip = p.getreg("eip")
+    p.execute('pdisas %s /%s' % (addr, n))
+
+setattr(PEDACmd, "afteraddr", afteraddr)
+setattr(PEDACmd, "afad", afteraddr)
+
+def beforeaddr(self, *arg):
+    """
+    Show n instructions after given addr
+    Usage:
+        MYNAME addr n
+    """
+    arch = p.getarch()
+    (addr, expr) = utils.normalize_argv(arg,2)
+    expr = str(expr)
+    n = gdb.parse_and_eval(expr)
+    n = utils.to_int(n)
+    if arch[1] == 64:
+        ip = p.getreg("rip")
+    else:
+        ip = p.getreg("eip")
+    if n == 1:
+        p.execute('pdisas %s /%s' % (ip, n))
+    else:
+        addr = p.prev_inst(ip, n)[1][0]
+        p.execute('pdisas %s /%s' % (addr, n))
+
+setattr(PEDACmd, "beforeaddr", beforeaddr)
+setattr(PEDACmd, "befad", beforeaddr)
+
 def grp(self, *arg):
     """
     Grep command-output
