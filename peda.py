@@ -6156,17 +6156,17 @@ peda = PEDA()
 pedacmd = PEDACmd()
 pedacmd.help.__func__.options = pedacmd.commands # XXX HACK
 
-# importing expedacmds.py
+# importing expedacmd.py
 PEDAFILE = os.path.abspath(os.path.expanduser(__file__))
 EXPEDAPATH = os.path.dirname(PEDAFILE)
 sys.path.insert(0, EXPEDAPATH)
 sys.path.insert(0, EXPEDAPATH + "/lib")
-import expedacmds
+import expedacmd
 import types
-for cmd_str in dir(expedacmds):
+for cmd_str in dir(expedacmd):
     if cmd_str[0] == "_":
         continue
-    cmd = getattr(expedacmds, cmd_str)
+    cmd = getattr(expedacmd, cmd_str)
     if not isinstance(cmd, types.FunctionType):
         continue
     setattr(PEDACmd, cmd_str, cmd)
