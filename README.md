@@ -1,41 +1,65 @@
-peda
-====
+expeda
+======
 
-PEDA - Python Exploit Development Assistance for GDB
+EXPEDA - Extended PEDA
 
-## Key Features:
-* Enhance the display of gdb: colorize and display disassembly codes, registers, memory information during debugging.
-* Add commands to support debugging and exploit development (for a full list of commands use `peda help`):
-  * `aslr` -- Show/set ASLR setting of GDB
-  * `checksec` -- Check for various security options of binary
-  * `dumpargs` -- Display arguments passed to a function when stopped at a call instruction
-  * `dumprop` -- Dump all ROP gadgets in specific memory range
-  * `elfheader` -- Get headers information from debugged ELF file
-  * `elfsymbol` -- Get non-debugging symbol information from an ELF file
-  * `lookup` -- Search for all addresses/references to addresses which belong to a memory range
-  * `patch` -- Patch memory start at an address with string/hexstring/int
-  * `pattern` -- Generate, search, or write a cyclic pattern to memory
-  * `procinfo` -- Display various info from /proc/pid/
-  * `pshow` -- Show various PEDA options and other settings
-  * `pset` -- Set various PEDA options and other settings
-  * `readelf` -- Get headers information from an ELF file
-  * `ropgadget` -- Get common ROP gadgets of binary or library
-  * `ropsearch` -- Search for ROP gadgets in memory
-  * `searchmem|find` -- Search for a pattern in memory; support regex search
-  * `shellcode` -- Generate or download common shellcodes.
-  * `skeleton` -- Generate python exploit code template
-  * `vmmap` -- Get virtual mapping address ranges of section(s) in debugged process
-  * `xormem` -- XOR a memory region with a key
+## New Key Features:
 
-## Installation
+* `ctn, c` -- Execute continue command
+* `brk, b` -- Execute break command
+* `next, n` -- Execute nexti command
+* `step, s` -- Execute stepi command
+* `afterpc, af` -- Show instructions after now program-counter
+* `beforepc, bef` -- Show instructions before now program-counter
+* `grp` -- Grep strings
+* `allstack` -- Show all stack data
+* `nuntil` -- Execute nexti command until given regexp
+* `suntil` -- Execute stepi command until given regexp
+* `nextcalluntil` -- Execute nextcall command until given regexp
+* `stepcalluntil` -- Execute nextcall and step command until given regexp and given depth
+* `infonow, inow` -- Show detail information of the instruction now specified program-counter
+* `infox` -- Customed xinfo command
+* `contextmode` -- Set context mode
+* ... and all commands of peda.
 
-    git clone https://github.com/longld/peda.git ~/peda
-    echo "source ~/peda/peda.py" >> ~/.gdbinit
-    echo "DONE! debug your program with gdb and enjoy"
+## Usage as a library:
 
-## Screenshot
-![start](http://i.imgur.com/P1BF5mp.png)
+    $ cat gdbrc.py
+    p = PEDA()
+    c = PEDACmd()
+    c.start()
+    c.nuntil("call")
+    c.grp("afterpc 10", ".*call.*")
+    $ gdb /bin/ls -x gdbrc.py
 
-![pattern arg](http://i.imgur.com/W97OWRC.png)
+    ...
 
-![patts](http://i.imgur.com/Br24IpC.png)
+    => 0x402a2c:    call   0x40db00
+       0x402a3b:    call   0x402840 <setlocale@plt>
+       0x402a4a:    call   0x4024b0 <bindtextdomain@plt>
+       0x402a54:    call   0x402470 <textdomain@plt>
+    gdb-expeda$ 
+
+## Usage when just debugging:
+
+    $ gdb /bin/ls -x gdbrc.py
+
+    ...
+
+    => 0x402a2c:    call   0x40db00
+       0x402a3b:    call   0x402840 <setlocale@plt>
+       0x402a4a:    call   0x4024b0 <bindtextdomain@plt>
+       0x402a54:    call   0x402470 <textdomain@plt>
+    gdb-peda$ vi tmp.py
+    gdb-peda$ cat tmp.py
+    while True:
+        c.next() # You can use `p` and `c` suddenly if you have used `p = PEDA()` and `c = PEDACmd()` in `gdbrc.py` .
+        eax = p.getreg("eax")
+        if eax == 0:
+            break
+    gdb-peda$ source tmp.py
+
+## Installation:
+
+    $ git clone https://github.com/miyagaw61/expeda.git /path/to/expeda
+    $ echo "source /path/to/expeda/peda.py" >> ~/.gdbinit

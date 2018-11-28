@@ -6257,3 +6257,9 @@ peda.execute("set step-mode on")
 peda.execute("set print pretty on")
 peda.execute("handle SIGALRM print nopass") # ignore SIGALRM
 peda.execute("handle SIGSEGV stop print nopass") # catch SIGSEGV
+
+# expeda aliases
+#editor = os.environ["EDITOR"]
+#Alias("vim", "shell %s" % editor)
+#Alias("emacs", "shell %s" % editor)
+#Alias("editor", "shell %s" % editor)
