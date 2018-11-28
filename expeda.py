@@ -7,7 +7,7 @@ import utils
 from enert2 import *
 
 p = PEDA()
-pc = PEDACmd()
+c = PEDACmd()
 
 def fuga(self, *arg):
     """

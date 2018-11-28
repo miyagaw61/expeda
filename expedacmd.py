@@ -11,7 +11,7 @@ from enert2 import *
 from enert2.enert2.colorize import *
 
 p = PEDA()
-pc = PEDACmd()
+c = PEDACmd()
 
 def ctn(self):
     """
@@ -181,10 +181,10 @@ def nuntil(self, *arg):
     ctx = config.Option.get("context")
     config.Option.set("context", "code")
     if callonlyflag == True or callonlyflag == "True":
-        cmd = pc.nextcall
+        cmd = c.nextcall
     else:
-        cmd = pc.next
-    pc.next()
+        cmd = c.next
+    c.next()
     while True:
         (addr, code) = p.current_inst(p.getreg("pc"))
         regexed_code = r.findall(code)
@@ -213,15 +213,15 @@ def suntil(self, *arg):
         depth = 1
     now_depth = 0
     if callonlyflag == True or callonlyflag == "True":
-        cmd = pc.nextcall
+        cmd = c.nextcall
     else:
-        cmd = pc.next
-    next_when_call = pc.next
-    step_when_call = pc.step
+        cmd = c.next
+    next_when_call = c.next
+    step_when_call = c.step
     arch = p.getarch()
     ctx = config.Option.get("context")
     config.Option.set("context", "code")
-    pc.step()
+    c.step()
     while True:
         (addr, code) = p.current_inst(p.getreg("pc"))
         regexed_code = r.findall(code)
@@ -234,13 +234,13 @@ def suntil(self, *arg):
             ret_code = r_ret.findall(code)
             if len(call_code) > 0:
                 if now_depth < depth:
-                    pc.step()
+                    c.step()
                     now_depth = now_depth + 1
                     continue
             elif len(ret_code) > 0:
                 if now_depth <= depth:
                     now_depth = now_depth - 1
-                    pc.next()
+                    c.next()
                     continue
             cmd()
 
@@ -254,7 +254,7 @@ def nextcalluntil(self, *arg):
     """
     (regex, ) = utils.normalize_argv(arg, 1)
     regex = str(regex)
-    pc.nuntil(regex, True)
+    c.nuntil(regex, True)
 
 setattr(PEDACmd, "nextcalluntil", nextcalluntil)
 
@@ -269,7 +269,7 @@ def stepcalluntil(self, *arg):
     depth = utils.to_int(depth)
     if depth == None:
         depth = 1
-    pc.suntil(regex, depth, True)
+    c.suntil(regex, depth, True)
 
 setattr(PEDACmd, "stepcalluntil", stepcalluntil)
 
@@ -279,7 +279,7 @@ def nuntilxor(self):
     Usage:
         MYNAME
     """
-    pc.nuntil("xor")
+    c.nuntil("xor")
 
 setattr(PEDACmd, "nuntilxor", nuntilxor)
 
@@ -293,7 +293,7 @@ def suntilxor(self, *arg):
     depth = utils.to_int(depth)
     if depth == None:
         depth = 1
-    pc.suntil("xor", depth)
+    c.suntil("xor", depth)
 
 setattr(PEDACmd, "suntilxor", suntilxor)
 
@@ -310,12 +310,12 @@ def infonow(self):
         if reg_A in code or reg_B in code:
             reg = reg.replace(" ", "")
             print(green("%s : " % reg, "bold"), end="")
-            pc.infox(gdb.parse_and_eval("$%s" % reg))
+            c.infox(gdb.parse_and_eval("$%s" % reg))
     for reg in REGISTERS[16]:
         regexed_code = re.findall("[ ,]%s" % reg, code)
         if len(regexed_code) > 0:
             print(green("%s : " % reg, "bold"), end="")
-            pc.infox(gdb.parse_and_eval("$%s" % reg))
+            c.infox(gdb.parse_and_eval("$%s" % reg))
     for i in (32, 64):
         for reg in REGISTERS[i]:
             reg_A = " " + reg
@@ -330,12 +330,12 @@ def infonow(self):
                     now_code_str = gdb.execute("pdisass $rip /1", to_string=True)
                     print(now_code_str[6:])
                 else:
-                    pc.infox(gdb.parse_and_eval("$%s" % reg))
+                    c.infox(gdb.parse_and_eval("$%s" % reg))
     regexed_code = re.findall("0x[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]+", code)
     if len(regexed_code) > 0:
         for addr in regexed_code:
             print(green("%s: " % addr, "bold"), end="")
-            pc.infox(addr)
+            c.infox(addr)
     regexed_code = re.findall(r"\[[^ ]*\]", code)
     if len(regexed_code) > 0:
         for addr in regexed_code:
@@ -354,7 +354,7 @@ def infonow(self):
             addr = addr.replace("]", "")
             addr = str(gdb.parse_and_eval(addr))
             addr = re.findall("0x[0-9a-f]+", addr)[0] # "0x12341234 <'hogefunction'>" -> "0x12341234"
-            pc.infox(addr)
+            c.infox(addr)
 
 setattr(PEDACmd, "infonow", infonow)
 setattr(PEDACmd, "inow", infonow)
