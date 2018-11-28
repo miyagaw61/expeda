@@ -106,7 +106,7 @@ def beforepc(self, *arg):
         addr = p.prev_inst(ip, n)[1][0]
         p.execute('pdisas %s /%s' % (addr, n))
 
-setattr(PEDACmd, "afterpc", beforepc)
+setattr(PEDACmd, "beforepc", beforepc)
 setattr(PEDACmd, "bef", beforepc)
 
 def afteraddr(self, *arg):
