@@ -50,14 +50,14 @@ EXPEDA - Extended PEDA
        0x402a3b:    call   0x402840 <setlocale@plt>
        0x402a4a:    call   0x4024b0 <bindtextdomain@plt>
        0x402a54:    call   0x402470 <textdomain@plt>
-    gdb-peda$ editor tmp.py # You must have set `$EDITOR` . And you can use `vim` or `emacs` instead of `editor` .
-    gdb-peda$ cat tmp.py
+    gdb-expeda$ editor tmp.py # You must have set `$EDITOR` . And you can use `vim` or `emacs` instead of `editor` .
+    gdb-expeda$ cat tmp.py
     while True:
         c.next() # You can use `p` and `c` suddenly if you have used `p = PEDA()` and `c = PEDACmd()` in `gdbrc.py` .
         eax = p.getreg("eax")
         if eax == 0:
             break
-    gdb-peda$ source tmp.py
+    gdb-expeda$ source tmp.py
 
 ## Installation:
 
