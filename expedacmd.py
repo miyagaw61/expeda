@@ -21,9 +21,8 @@ def ctn(self):
     """
     gdb.execute("continue")
 
-c = ctn
 setattr(PEDACmd, "ctn", ctn)
-setattr(PEDACmd, "c", c)
+setattr(PEDACmd, "c", ctn)
 
 def brk(self, *arg):
     """
@@ -34,9 +33,8 @@ def brk(self, *arg):
     (sym, ) = utils.normalize_argv(arg, 1)
     p.set_breakpoint(sym)
 
-b = brk
 setattr(PEDACmd, "brk", brk)
-setattr(PEDACmd, "b", b)
+setattr(PEDACmd, "b", brk)
 
 def next(self, *arg):
     """
@@ -50,9 +48,8 @@ def next(self, *arg):
         n = 1
     gdb.execute("nexti " + str(n))
 
-n = next
 setattr(PEDACmd, "next", next)
-setattr(PEDACmd, "n", n)
+setattr(PEDACmd, "n", next)
 
 def step(self, *arg):
     """
@@ -66,9 +63,8 @@ def step(self, *arg):
         n = 1
     gdb.execute("stepi " + str(n))
 
-s = step
 setattr(PEDACmd, "step", step)
-setattr(PEDACmd, "s", s)
+setattr(PEDACmd, "s", step)
 
 def afterpc(self, *arg):
     """
@@ -86,7 +82,8 @@ def afterpc(self, *arg):
         ip = "$eip"
     p.execute('pdisas %s /%s' % (ip, n))
 
-af = afterpc
+setattr(PEDACmd, "afterpc", afterpc)
+setattr(PEDACmd, "af", afterpc)
 
 def beforepc(self, *arg):
     """
@@ -109,7 +106,8 @@ def beforepc(self, *arg):
         addr = p.prev_inst(ip, n)[1][0]
         p.execute('pdisas %s /%s' % (addr, n))
 
-bef = beforepc
+setattr(PEDACmd, "afterpc", beforepc)
+setattr(PEDACmd, "bef", beforepc)
 
 def grp(self, *arg):
     """
@@ -129,6 +127,8 @@ def grp(self, *arg):
         utils.msg("Exception in grp(%s, %s): %s" % (repr(cmd), repr(regex), e), "red")
         traceback.print_exc()
         return False
+
+setattr(PEDACmd, "grp", grp)
 
 def allstack(self):
     """
@@ -151,6 +151,8 @@ def allstack(self):
     p.execute("stack %s" % arg)
     return
 
+setattr(PEDACmd, "allstack", allstack)
+
 def lpout(self):
     """
     Execute nexti until loop-end
@@ -163,6 +165,8 @@ def lpout(self):
     else:
         peda.execute("nexti $ecx")
     return
+
+setattr(PEDACmd, "lpout", lpout)
 
 def nuntil(self, *arg):
     """
@@ -190,6 +194,8 @@ def nuntil(self, *arg):
             break
         else:
             cmd()
+
+setattr(PEDACmd, "nuntil", nuntil)
 
 def suntil(self, *arg):
     """
@@ -238,6 +244,8 @@ def suntil(self, *arg):
                     continue
             cmd()
 
+setattr(PEDACmd, "suntil", suntil)
+
 def nextcalluntil(self, *arg):
     """
     Execute nextcall until regex
@@ -247,6 +255,8 @@ def nextcalluntil(self, *arg):
     (regex, ) = utils.normalize_argv(arg, 1)
     regex = str(regex)
     pc.nuntil(regex, True)
+
+setattr(PEDACmd, "nextcalluntil", nextcalluntil)
 
 def stepcalluntil(self, *arg):
     """
@@ -261,6 +271,8 @@ def stepcalluntil(self, *arg):
         depth = 1
     pc.suntil(regex, depth, True)
 
+setattr(PEDACmd, "stepcalluntil", stepcalluntil)
+
 def nuntilxor(self):
     """
     Execute nexti until jmp-cmds
@@ -268,6 +280,8 @@ def nuntilxor(self):
         MYNAME
     """
     pc.nuntil("xor")
+
+setattr(PEDACmd, "nuntilxor", nuntilxor)
 
 def suntilxor(self, *arg):
     """
@@ -280,6 +294,8 @@ def suntilxor(self, *arg):
     if depth == None:
         depth = 1
     pc.suntil("xor", depth)
+
+setattr(PEDACmd, "suntilxor", suntilxor)
 
 def infonow(self):
     """
@@ -340,7 +356,8 @@ def infonow(self):
             addr = re.findall("0x[0-9a-f]+", addr)[0] # "0x12341234 <'hogefunction'>" -> "0x12341234"
             pc.infox(addr)
 
-inow = infonow
+setattr(PEDACmd, "infonow", infonow)
+setattr(PEDACmd, "inow", infonow)
 
 def infox(self, *arg):
     """
@@ -410,6 +427,8 @@ def contextmode(self, *arg):
     if opt == None:
         return
     config.Option.set("context", opt)
+
+setattr(PEDACmd, "contextmode", contextmode)
 
 ##def my_normalize_argv(args, size=0):
 ##    """
