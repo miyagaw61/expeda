@@ -6159,42 +6159,42 @@ peda = PEDA()
 pedacmd = PEDACmd()
 pedacmd.help.__func__.options = pedacmd.commands # XXX HACK
 
-# importing expedacmd.py
-PEDAFILE = os.path.abspath(os.path.expanduser(__file__))
-EXPEDAPATH = os.path.dirname(PEDAFILE)
-sys.path.insert(0, EXPEDAPATH)
-sys.path.insert(0, EXPEDAPATH + "/lib")
-import expedacmd
-import types
-for cmd_str in dir(expedacmd):
-    if cmd_str[0] == "_":
-        continue
-    cmd = getattr(expedacmd, cmd_str)
-    if not isinstance(cmd, types.FunctionType):
-        continue
-    setattr(PEDACmd, cmd_str, cmd)
-    pedacmd.commands.append(cmd_str)
-
-# importing expeda.py
-import expeda
-for cmd_str in dir(expeda):
-    if cmd_str[0] == "_":
-        continue
-    cmd = getattr(expeda, cmd_str)
-    if not isinstance(cmd, types.FunctionType):
-        continue
-    setattr(PEDA, cmd_str, cmd)
-
-# importing exutils.py
-import utils
-import exutils
-for cmd_str in dir(exutils):
-    if cmd_str[0] == "_":
-        continue
-    cmd = getattr(exutils, cmd_str)
-    if not isinstance(cmd, types.FunctionType):
-        continue
-    setattr(utils, cmd_str, cmd)
+## importing expedacmd.py
+#PEDAFILE = os.path.abspath(os.path.expanduser(__file__))
+#EXPEDAPATH = os.path.dirname(PEDAFILE)
+#sys.path.insert(0, EXPEDAPATH)
+#sys.path.insert(0, EXPEDAPATH + "/lib")
+#import expedacmd
+#import types
+#for cmd_str in dir(expedacmd):
+#    if cmd_str[0] == "_":
+#        continue
+#    cmd = getattr(expedacmd, cmd_str)
+#    if not isinstance(cmd, types.FunctionType):
+#        continue
+#    setattr(PEDACmd, cmd_str, cmd)
+#    pedacmd.commands.append(cmd_str)
+#
+## importing expeda.py
+#import expeda
+#for cmd_str in dir(expeda):
+#    if cmd_str[0] == "_":
+#        continue
+#    cmd = getattr(expeda, cmd_str)
+#    if not isinstance(cmd, types.FunctionType):
+#        continue
+#    setattr(PEDA, cmd_str, cmd)
+#
+## importing exutils.py
+#import utils
+#import exutils
+#for cmd_str in dir(exutils):
+#    if cmd_str[0] == "_":
+#        continue
+#    cmd = getattr(exutils, cmd_str)
+#    if not isinstance(cmd, types.FunctionType):
+#        continue
+#    setattr(utils, cmd_str, cmd)
 
 # register "peda" command in gdb
 pedaGDBCommand()
