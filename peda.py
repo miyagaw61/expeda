@@ -1728,7 +1728,10 @@ class PEDA(object):
             intsize = self.intsize()
         value = self.readmem(address, intsize)
         if value:
-            value = to_int("0x" + codecs.encode(value[::-1], 'hex'))
+            value = codecs.encode(value[::-1], 'hex')
+            value = value.decode("utf-8")
+            value = "0x" + value
+            value = to_int(value)
             return value
         else:
             return None
