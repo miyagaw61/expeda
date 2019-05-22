@@ -2120,6 +2120,14 @@ class PEDA(object):
                     if value >= start and value < end:
                         if type == "code":
                             out = self.get_disasm(value)
+                            if "\n" in out:
+                                n_idx = out.index("\n")
+                                out_before = out[:n_idx]
+                                out_after = out[n_idx+1:]
+                                out = out_before
+                                while out_after[0] == " ":
+                                    out_after = out_after[1:]
+                                out += out_after
                             p = re.compile(".*?0x[^ ]*?\s(.*)")
                             m = p.search(out)
                             result = (to_hex(value), "code", m.group(1))
