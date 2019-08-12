@@ -199,7 +199,7 @@ def allstack(self):
     intsize = pd.intsize()
     arg = arg/intsize
     arg += 1
-    arg = utils.to_i(arg)
+    arg = utils.to_int(arg)
     pd.execute("stack %s" % arg)
     return
 
